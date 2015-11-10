@@ -1,0 +1,66 @@
+body {
+	text-align: center;
+}
+
+.playlist {
+	margin: 20px;
+}
+
+#featPlaylists {
+	width: 50%;
+	float: left;
+}
+
+#userPlaylists {
+	width: 50%;
+	float: right;
+}
+
+.playlist img {
+	max-height: 300px;
+	max-width: 300px;
+}
+
+.start img {
+	float: left;
+}
+
+form {
+	text-align: left;
+}
+
+#playlistImg {
+	margin: 20px;
+}
+
+#questions {
+	float: left;
+	padding: 20px;
+	clear: right;
+}
+
+#submitButton {
+	margin: 8px;
+}
+
+#score {
+	font-weight: bold;
+}
+
+#songSearch {
+	margin: 50px;
+	text-align: center;
+	border: 1px solid black;
+	padding: 10px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#results {
+	text-align: left;
+}
+
+#gameArea {
+	margin-left: auto;
+	margin-right: auto;
+}
