@@ -2,7 +2,7 @@ var app = angular.module('app', ['spotify']);
 
 app.config(function(SpotifyProvider) {
 	SpotifyProvider.setClientId('5b1236cf83ea44d59b856d51b4502b8d');
-	SpotifyProvider.setRedirectUri('http://localhost:8080/Dropbox/INFO343/code/spotify-challenge/callback.html');
+	SpotifyProvider.setRedirectUri('http://students.washington.edu/bartelsc/info343/spotify-challenge/callback.html');
 	SpotifyProvider.setScope('playlist-read-private playlist-read-collaborative');
 });
 
