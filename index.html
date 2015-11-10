@@ -1,3 +1,8 @@
+<!--Colin Bartels
+INFO 343 C
+This file contains the html code for the spotify challenge
+-->
+
 <!DOCTYPE html>
 <html>
 	<head>
@@ -22,6 +27,8 @@
 			<h3>How well do you know music?</h3>
 			<p>Choose a featured playlist, or one of your own</p>
 			<button id="login" class="btn btn-primary" ng-click="login()" ng-show="!loggedIn()">Log in to Spotify</button>
+
+			<!--Game Area-->
 			<div id="gameArea" class="container"></div>
 			<div id="playlists" class="container">
 				<div id="featPlaylists">
@@ -40,6 +47,7 @@
 				</div>
 			</div>
 
+			<!--Song Search Area-->
 			<div id="songSearch" class="container">
 				<form name="searchForm" novalidate>
 					<div class="form-group">

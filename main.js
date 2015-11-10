@@ -1,20 +1,27 @@
+//Colin Bartels
+//INFO 343 C 
+// This file contains the javascript code for the spotify challenge
+
+//Set up angular app, uses angular-spotify github repo
 var app = angular.module('app', ['spotify']);
 
+//Configures spotifiy authorization
 app.config(function(SpotifyProvider) {
 	SpotifyProvider.setClientId('5b1236cf83ea44d59b856d51b4502b8d');
 	SpotifyProvider.setRedirectUri('http://students.washington.edu/bartelsc/info343/spotify-challenge/callback.html');
 	SpotifyProvider.setScope('playlist-read-private playlist-read-collaborative');
 });
 
+//Sets up controller
 var MainCtrl = app.controller('MainCtrl', function($scope, Spotify) {
 	$scope.search = {};
 	var userToken = "";
 
+	//Logs into spotify when button is clicked
  	$scope.login = function() {
  	 	Spotify.login().then(function() {
 	 	 	userToken = localStorage.getItem('spotify-token');
 	 	 	if (userToken === "" || userToken == null) {
-	 	 		console.log("Log in failed");
 	 	 	}else{
 	 	 		app.config(function(SpotifyProvider) {
 	 	 			SpotifyProvider.setAuthToken(userToken);
@@ -25,6 +32,7 @@ var MainCtrl = app.controller('MainCtrl', function($scope, Spotify) {
  	 	
  	};
 
+ 	//Checks if you are logged in
  	$scope.loggedIn = function() {
  		if (userToken === "" || userToken == null) {
  			return false;
@@ -33,26 +41,24 @@ var MainCtrl = app.controller('MainCtrl', function($scope, Spotify) {
  		}
  	};
 
+ 	//Displays the featured and user's playlists
  	var userId = "";
  	var createPlaylists = function() {
  		Spotify.getCurrentUser().then(function(data) {
-	 	 	console.log(data);
 	 	 	userId = data.id;
  		
 	 		Spotify.getFeaturedPlaylists().then(function(featPlaylists) {
 	  			$scope.featPlaylists = featPlaylists.playlists.items;
-	  			 console.log(featPlaylists.playlists.items);
 			});
-			console.log("UserId: " + userId);
 			Spotify.getUserPlaylists(userId).then(function(userPlaylists) {
 				if (userPlaylists.items != null) {
 					$scope.userPlaylists = userPlaylists.items;
-					console.log(userPlaylists.items);
 				}	
 			});
 		});
 	};
 
+	//Gets the playlist that is clicked on
 	var clicked = 0;
 	$scope.getPlaylist = function(playlist) {
 		clicked++;
@@ -62,16 +68,14 @@ var MainCtrl = app.controller('MainCtrl', function($scope, Spotify) {
 		var id = playlist.id;
 		var owner = playlist.owner.id;
 		var image = playlist.images[0].url
-		console.log(id);
-		console.log(owner);
 
 		Spotify.getPlaylistTracks(owner, id).then(function(data) {
-			console.log(data);
 			$('#playlists').empty();
 			createInterface(data, image);
 		});
 	}
 
+	//Sets up interface to start the game
 	var createInterface = function(data, image) {
 		var div = $('#gameArea');
 		var imgDiv = $('<div class="playlist" id="playlistImg"></div>')
@@ -88,6 +92,7 @@ var MainCtrl = app.controller('MainCtrl', function($scope, Spotify) {
 		score.appendTo(div);
 	}
 
+	//Starts game when start button is clicked
 	var startQuiz = function(data) {
 		$('#startButton').remove();
 		$('#playlistImg').addClass("start");
@@ -98,6 +103,7 @@ var MainCtrl = app.controller('MainCtrl', function($scope, Spotify) {
 		nextSong(data, form);
 	}
 
+	//Advances to the next question and song when answer is submitted
 	var audio;
 	var nextSong = function(data, form) {
 		form.empty();
@@ -120,6 +126,7 @@ var MainCtrl = app.controller('MainCtrl', function($scope, Spotify) {
 		var q2;
 		var q3;
 
+		//Sets up new answer choices
 		if (position == 0) {
 			q0 = $('<input type="radio" name="answer" value="' + correctAnswer + '">' + " " + correctAnswer + '</input></br>');
 			q1 = $('<input type="radio" name="answer" value="' + wrong1 + '">' + " " + wrong1 + '</input></br>');
@@ -154,6 +161,7 @@ var MainCtrl = app.controller('MainCtrl', function($scope, Spotify) {
 		});
 		submitButton.appendTo(form);
 
+		//Sets up pause button for current song
 		var pauseButton = $('<button id="pause" class="btn btn-primary">Play&#47;Pause</button>');
 		pauseButton.click(function() {
 			pause(correctSong.preview_url);
@@ -166,6 +174,7 @@ var MainCtrl = app.controller('MainCtrl', function($scope, Spotify) {
 		$scope.currentSong = correctSong.preview_url;
 	}
 
+	//Pauses/Plays Current song
 	var pause = function(song) {
 		if ($scope.currentSong == song) {
 			audio.pause();
@@ -176,12 +185,10 @@ var MainCtrl = app.controller('MainCtrl', function($scope, Spotify) {
 		}
 	}
 
+	//Checks answer on submit and increments guess counters
 	var totalGuesses = 0;
 	var correctGuesses = 0;
-
 	var checkAnswer = function(answer, correctAnswer, form, data) {
-		console.log(answer);
-		console.log(correctAnswer);
 		if (answer == correctAnswer) {
 			totalGuesses++;
 			correctGuesses++;
@@ -193,14 +200,15 @@ var MainCtrl = app.controller('MainCtrl', function($scope, Spotify) {
 		nextSong(data, form);
 	}
 
+	//Searches spotify for desired song
 	$scope.search = function() {
 		var text = $('#songSearch input').val();
 		Spotify.search(text, 'track').then(function(data) {
-			console.log(data);
 			$scope.results = data.tracks.items;
 		});
 	}
 
+	//Plays/Pauses song when clicked on
 	$scope.play = function(song) {
 		if ($scope.currentSong == song) {
 			audio.pause();
